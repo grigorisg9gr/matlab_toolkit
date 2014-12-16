@@ -4,7 +4,7 @@ function result = modify_gdocs(opt,varargin)
 % options: 
 % for writing:              modify_gdocs('w', Name_of_Spreadsheet, Name_of_Worksheet, row, col, value)
 % for reading one value:    value = modify_gdocs('r', Name_of_Spreadsheet, Name_of_Worksheet, row, col)
-% for reading a range:      values = modify_gdocs('rr', Name_of_Spreadsheet, Name_of_Worksheet, row_start, col_start, row_end, col_end)
+% for reading a range:      values = modify_gdocs('rr', Name_of_Spreadsheet, Name_of_Worksheet, row_start, row_end, col_start, col_end)
 %
 % Copyright (C) 2014 Grigorios G. Chrysos
 % available under the terms of the Apache License, Version 2.0

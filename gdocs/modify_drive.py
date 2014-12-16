@@ -22,7 +22,7 @@ import sys
     # uid               used id (or e-mail) for login in drive
     # pass1             password for drive
 
-def login_find_spreadsheet(name_spr, uid, pass1):
+def login_find_spreadsheet(name_spr, uid, pass1, create_sp = 'True'):
     # grigoris, 24 July 2014: This function makes the login to drive and tracks the spreadsheet.
     # if anything goes wrong, it raises and exception.
 
@@ -31,14 +31,30 @@ def login_find_spreadsheet(name_spr, uid, pass1):
         gc = gspread.login(uid, pass1)
     except:
         print "Identification with google drive failed"
-        raise Exception()
+        raise Exception("Identification with google drive failed")
 
     # Open a spreadsheet or create it if it doesn't exist
     try:
         spreadsheet = gc.open(name_spr)
     except:
-        print "No such spreadsheet with name " + name_spr
-        raise Exception()
+        #print "No such spreadsheet with name " + name_spr
+        #raise Exception()
+	if create_sp=='False': 
+	    raise Exception('The spreadsheet does not exist')
+	try:
+	    import gdata.docs.client
+	except:
+	    raise Exception('The spreadsheet does not exist and'+
+		'gdata is not installed, so it cannot be created')
+	print('The gdoc did not exist and is created')
+	docs_client = gdata.docs.client.DocsClient()
+	docs_client.ClientLogin(uid, pass1,'any')
+	document = gdata.docs.data.Resource(type='spreadsheet', 
+			title=name_spr)
+	resource = docs_client.CreateResource(document)
+	full_id = resource.resource_id.text # returned by gdata
+	gs_id = full_id[len('spreadsheet:'):] 
+	spreadsheet = gc.open_by_key(gs_id)
     return spreadsheet
 
 
@@ -108,6 +124,20 @@ def readrange(name_spr, name_wks, row, row_end, col, col_end, uid, pass1):
         print "Potentially row or column are out of bounds."
         raise Exception()
     return val
+
+
+def make_backup(name_spr, uid, pass1, backup_name = 'Copy' ):
+    # grigoris, 16/12/2014: This function creates a copy/backup of the existing name_spr spreadsheet
+    sp = login_find_spreadsheet(name_spr,uid,pass1,'False')
+    try:
+	import gdata.docs.client
+    except:
+	raise Exception('Package gdata does not exist, cannot create backup')
+    docs_client = gdata.docs.client.DocsClient()
+    docs_client.ClientLogin(uid, pass1,'any')
+    base_resource = docs_client.GetResourceById(sp.id)
+    docs_client.copy_resource(base_resource, backup_name)
+
 
 # example call through another python script or in terminal with no arguments
 #writeInSpreadsheet("python_test", "Sheet2", 11, 14,11, 'your_mail@gmail.com', 'pass' )
