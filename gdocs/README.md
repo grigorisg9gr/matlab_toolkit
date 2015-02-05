@@ -4,8 +4,15 @@ This is a package that allows you to modify a spreadsheet with the new Google Sh
 
 Installation: 
 1) Download the files
+
 2) Provide the used id, pass and the path of installation in modify_gdocs.m
+
 3) Create the spreadsheet you want to modify, read if it doesn't exist. 
+
+
+
+Apart from the MATLAB API, it can be used as an API for accessing and modifying the google drive documents from python. The functions of modify_drive.py can be used in python scripts for this purpose. 
+
 
 
 
