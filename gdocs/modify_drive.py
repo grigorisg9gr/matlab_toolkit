@@ -1,5 +1,3 @@
-import gspread
-import sys
 """
 A wrapper class for gspread in order to write effectively to a spreadsheet (google drive).
 The following functionalities are supported:
@@ -11,9 +9,11 @@ The following functionalities are supported:
  available under the terms of the Apache License, Version 2.0
  """
 
-
+import sys
 import json
 from oauth2client.client import SignedJwtAssertionCredentials
+import gspread
+from gspread import SpreadsheetNotFound, WorksheetNotFound
 
 class Spreadsheets:
 
@@ -148,13 +148,13 @@ def form_cell(col, row):
 def check_nr_args(args1, requested_nr, func):
     # checks whether the number of arguments is sufficient.
     if args1 != requested_nr:
-        print RuntimeError("The requested number of arguments is not met in the call of " + func + ".")
+        raise RuntimeError("The requested number of arguments is not met in the call of " + func + ".")
 
 # call from terminal with full argument list:
 if __name__ == '__main__':
     args = len(sys.argv)
     if args < 2:
-        print "Not enough arguments for selecting an option in " + sys.argv[0]
+        print("Not enough arguments for selecting an option in " + sys.argv[0])
         raise Exception()
     option = int(sys.argv[1])
     sp = Spreadsheets(sys.argv[2])
@@ -173,4 +173,4 @@ if __name__ == '__main__':
     else:
         val = 0
         raise Exception('Invalid option.')
-    print val
+    print(val)

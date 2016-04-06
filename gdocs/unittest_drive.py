@@ -6,6 +6,20 @@ def random_string_gen(range1=12):
     import random
     return ''.join(random.choice(string.ascii_uppercase) for i in range(range1))
 
+# fake json key for google authorisation
+json_key = {
+  "private_key_id": random_string_gen(),
+  "private_key": "-----BEGIN PRIVATE KEY-----\n" + random_string_gen() + "\n" + random_string_gen() + "\n" +
+                 random_string_gen() + "\n" + random_string_gen() + "\n" + random_string_gen() + "\n" +
+                 random_string_gen() + "\n" + random_string_gen() + "\n" + random_string_gen() + "\n" +
+                 random_string_gen() + "\n" + random_string_gen() + "\n" + random_string_gen() + "\n" +
+                 random_string_gen() + "\n" + random_string_gen() + "\n" + random_string_gen() +
+                 "\n-----END PRIVATE KEY-----\n",
+  "client_email": random_string_gen(25) + "@developer.gserviceaccount.com",
+  "client_id": random_string_gen(25) +  ".apps.googleusercontent.com",
+  "type": "service_account"
+}
+
 class TestModifyDrive(unittest.TestCase):
     """
     Tests for checking the basic elementary functions of the modify_drive.py
@@ -24,28 +38,44 @@ class TestModifyDrive(unittest.TestCase):
         except:
             raise ImportError('gspread does not exist, but it is required.')
 
-    def login_fail(self, random_str):
-        """ The function is designed for failing the login in google drive (opposite of assertRaises).
-            It uses random names to try to login.
-        """
-        from modify_drive import login_find_spreadsheet
-        try:
-            login_find_spreadsheet(random_str, random_str, random_string_gen(8))
-            self.assertTrue(False)
-        except RuntimeError:
-            pass
-        except:
-            self.assertTrue(False)
+    # def login_fail(self, random_str):
+    #     """ The function is designed for failing the login in google drive (opposite of assertRaises).
+    #         It uses random names to try to login.
+    #     """
+    #     from modify_drive import login_find_spreadsheet
+    #     try:
+    #         login_find_spreadsheet(random_str, random_str, random_string_gen(8))
+    #         self.assertTrue(False)
+    #     except RuntimeError:
+    #         pass
+    #     except:
+    #         self.assertTrue(False)
+    #
+    # def test_modify_drive(self):
+    #     from modify_drive import login_find_spreadsheet, form_cell
+    #     self.assertRaises(ImportError, self.import_gspread()) # if gspread can be imported
+    #     random_str = random_string_gen()
+    #     self.login_fail(random_str)
+    #     self.login_fail(random_str + '@yahoo.com')
+    #     self.login_fail(random_str + '@googlemail.com')
+    #     self.assertEqual(form_cell(1, 1), 'A1')
+    #     self.assertEqual(1+1, 2)
 
-    def test_modify_drive(self):
-        from modify_drive import login_find_spreadsheet, form_cell
-        self.assertRaises(ImportError, self.import_gspread()) # if gspread can be imported
-        random_str = random_string_gen()
-        self.login_fail(random_str)
-        self.login_fail(random_str + '@yahoo.com')
-        self.login_fail(random_str + '@googlemail.com')
+    def fake_path(self):
+        from modify_drive import Spreadsheets
+        try:
+            val = 1
+            tr = Spreadsheets('/tmp/1.json')
+        except ImportError:
+            val = 10
+        except:
+            val = 0
+        return val
+
+    def test_login(self):
+        from modify_drive import form_cell
+        self.assertEqual(self.fake_path(), 10)
         self.assertEqual(form_cell(1, 1), 'A1')
-        self.assertEqual(1+1, 2)
 
 
 class TestModifyDriveMock(unittest.TestCase):
