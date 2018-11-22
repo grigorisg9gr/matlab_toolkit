@@ -1,0 +1,17 @@
+*~
+*.pyc
+.idea/*
+.ipynb_checkpoints/*
+tmp.txt
+wisdom.fftw
+*.mat
+tmp_*
+*Copy*.ipynb
+*.log
+
+# Directories (and subdirectories)
+**/__pycache__/
+**/.ipynb_checkpoints/
+**/labs_logs/
+**/lab_logs/
+
